@@ -77,8 +77,7 @@ public class day01 {
 		}
 	}
 	
-	public static void main(String args[]) throws IOException {
-		File dir = new File(".");
+	public day01(String args[]) throws IOException {
 		File file = new File("/Users/Hisoka/Documents/workspace/adventofcode/src/advent01/directions.txt");
 		
 		readInstructions(file);
