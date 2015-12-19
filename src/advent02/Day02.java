@@ -45,11 +45,11 @@ import java.io.IOException;
  * @author Hisoka
  *
  */
-public class day02 {
+public class Day02 {
 	private static int totalWrappingPaper = 0;
 	private static int totalRibbon = 0;
 	
-	public static void main(String args[]) {
+	public Day02() {
 		File file = new File("/Users/Hisoka/Documents/workspace/adventofcode/src/advent02/dimensions.txt");
 		try {
 			readDimensions(file);

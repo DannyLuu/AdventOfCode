@@ -41,7 +41,7 @@ import java.io.*;
  * @author Hisoka
  *
  */
-public class day01 {
+public class Day01 {
 	
 	private static int finalFloor = 0;
 	private static int position = 0;
@@ -77,7 +77,7 @@ public class day01 {
 		}
 	}
 	
-	public day01(String args[]) throws IOException {
+	public Day01(String args[]) throws IOException {
 		File file = new File("/Users/Hisoka/Documents/workspace/adventofcode/src/advent01/directions.txt");
 		
 		readInstructions(file);
