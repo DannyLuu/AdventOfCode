@@ -51,6 +51,24 @@ public class Day03 {
 		bufferedReader.close();
 	}
 	
+	private static Point travel(int x, int y, char c) {
+		int dx = x;
+		int dy = y;
+		
+		if (c == '^') {
+			dy += 1;
+		} else if (c == '>') {
+			dx += 1;
+		} else if (c == 'v') {
+			dy -= 1;
+		} else if (c == '<') {
+			dx -= 1;
+		}
+		
+		return new Point(dx, dy);
+		
+	}
+	
 	private static int deliverPresent(String directions) {
 		char [] steps = directions.toCharArray();
 		int x,y;
