@@ -27,7 +27,6 @@ public class InputScanner {
 		
 		String line = null;
 		while ((line = bufferedReader.readLine()) != null) {
-			// Perform action
 			list.add(line);
 		}
 		bufferedReader.close();
@@ -41,25 +40,33 @@ public class InputScanner {
 	 * @param file
 	 * @throws IOException
 	 */
-	public static void readWords(File file) throws IOException {
+	public static List<String> readWords(File file) throws IOException {
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+		List<String> words = new ArrayList();
 		
 		String line = null;
 		while ((line = bufferedReader.readLine()) != null) {
-			// Perform action
-			
+			words.addAll(parseString(line, " "));
 		}
+		
+		return words;
 	}
 	
 	/***
-	 * Parses the String to return an array of Strings
+	 * Parses the String to return an array of Strings seperated by the delimiter.
 	 * @param line
 	 * @return
 	 */
-	public static String [] parseDimensions(String line, String delim) {
+	public static List<String> parseString(String line, String delim) {
 		String delimiter = "["+ delim +"]+";
+		List<String> words = new ArrayList();
 		String [] dimensions = line.split(delimiter);
 		
-		return dimensions;
+		
+		for (String word : dimensions) {
+			words.add(word);
+		}
+		
+		return words;
 	}
 }
