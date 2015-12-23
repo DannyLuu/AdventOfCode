@@ -48,7 +48,7 @@ public class Day05 {
 	}
 
 	/**
-	 * 
+	 * Counts the number of nice words from the Array List of Strings
 	 * @param words
 	 */
 	private static int countNiceWords(List<String> words) {
@@ -103,7 +103,7 @@ public class Day05 {
 	}
 	
 	/**
-	 * 
+	 * Returns true if it contains an invalid string.
 	 * @param word
 	 * @return
 	 */
