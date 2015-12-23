@@ -72,15 +72,11 @@ public class Day04 {
 	
 	private static boolean isLowestMD5(String md5) {
 		String test = md5.substring(0, 5);
-		
-		//System.out.println(md5 + " " + test);
 		return test.equals("00000");
 	}
 	
 	private static boolean isLowestMD52(String md5) {
 		String test = md5.substring(0, 6);
-		
-		//System.out.println(md5 + " " + test);
 		return test.equals("000000");
 	}
 	
