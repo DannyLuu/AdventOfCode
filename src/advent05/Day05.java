@@ -24,44 +24,81 @@ import utilities.InputScanner;
  * - dvszwmarrgswjxmb is naughty because it contains only one vowel.
  * 
  * How many strings are nice?
- * @author Hisoka
  *
+ * --- Part Two ---
+ * Realizing the error of his ways, Santa has switched to a better model of determining whether a string is naughty or nice. None of the old rules apply,
+ * as they are all clearly ridiculous.
+ *
+ * Now, a nice string is one with all of the following properties:
+ * It contains a pair of any two letters that appears at least twice in the string without overlapping, like xyxy (xy) or aabcdefgaa (aa), but not like
+ * aaa (aa, but it overlaps).
+ * It contains at least one letter which repeats with exactly one letter between them, like xyx, abcdefeghi (efe), or even aaa.
+ *
+ * For example:
+ * - qjhvhtzxzqqjkmpb is nice because is has a pair that appears twice (qj) and a letter that repeats with exactly one letter between them (zxz).
+ * - xxyxx is nice because it has a pair that appears twice and a letter that repeats with one between, even though the letters used by each rule overlap.
+ * - uurcxstgmygtbstg is naughty because it has a pair (tg) but no repeat with a single letter between them.
+ * - ieodomkazucvgmuy is naughty because it has a repeating letter with one between (odo), but no pair that appears twice.
+ * 
+ * How many strings are nice under these new rules?
+ * 
+ * author: Hisoka
  */
 public class Day05 {
 	
 	public static void main(String args []) {
+		File file = new File("/Users/Hisoka/Documents/workspace/adventofcode/src/advent05/list-of-strings.txt");
 		int niceWords = 0;
+		int niceWordsPart2 = 0;
+		
+		List<String> niceWords2 = new ArrayList<String>(); 
 		try {			
-			niceWords = countNiceWords(InputScanner.readLines(new File("/Users/Hisoka/Documents/workspace/adventofcode/src/advent05/list-of-strings.txt")));
+			niceWords = countNiceWords(InputScanner.readLines(file));
+			niceWordsPart2 = countNiceWordsWithNewRules(InputScanner.readLines(file));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Shit...");
 		}
 		
-		System.out.println("From the list there are " + niceWords + " nice words from the list.");
-		
-//		String test = "ugknbfddgicrmopn";
-//		System.out.println(test);
-//		System.out.println("doesItContainAtLeastThreeVowels: " + doesItContainAtLeastThreeVowels(test));
-//		System.out.println("doesContainInvalidChars: " + doesContainInvalidChars(test));
-//		System.out.println("doesLettersAppearTwice: " + doesLettersAppearTwice(test));
+		System.out.println("Using part 1 rules, from the list there are " + niceWords + " nice words from the list.");
+		System.out.println("Using part 2 rules, from the list there are " + niceWordsPart2 + " nice words from the list.");
 	}
-
-	/**
-	 * Counts the number of nice words from the Array List of Strings
-	 * @param words
-	 */
+	
 	private static int countNiceWords(List<String> words) {
-		List<String> list = new ArrayList();
+		int niceWords = 0;
 		
-		// Purge bad words with invalid chars.
 		for (String word : words) {
-			if (!doesContainInvalidChars(word) && doesLettersAppearTwice(word) && doesItContainAtLeastThreeVowels(word)) {
-				list.add(word);
+			boolean containInvalidChars = false;
+			boolean appearsTwice = false;
+			boolean containsAtLeastThreeVowels = false;
+			int vowels = 0;
+			
+			char prev = ' ';			
+			for (char c : word.toCharArray()) {
+				if (doesContainInvalidChars(prev, c)) {
+					containInvalidChars = true;
+					break;
+				}
+				
+				if (!appearsTwice && prev == c) {
+					appearsTwice = true;
+				}				
+
+				if (!containsAtLeastThreeVowels && isVowel(c)) {
+					vowels++;
+					if (vowels == 3) {
+						containsAtLeastThreeVowels = true;
+					}
+				}
+				prev = c;
+			}
+			
+			if (!containInvalidChars && appearsTwice && containsAtLeastThreeVowels) {
+				niceWords++;
 			}
 		}
 		
-		return list.size();
+		return niceWords;
 	}
 	
 	/**
@@ -69,37 +106,17 @@ public class Day05 {
 	 * @param word
 	 * @return
 	 */
-	private static boolean doesItContainAtLeastThreeVowels(String word) {
-		int vowels = 0;
-		char [] letters = word.toCharArray();
-		
-		for (char c : letters) {
-			if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {		
-				vowels++;
-			}
-			if (vowels == 3) {
-				return true;
-			}
+	private static boolean isVowel(char c) {
+		switch (c) {
+		case 'a':
+		case 'e':
+		case 'i':
+		case 'o':
+		case 'u':
+			return true;
+		default:
+			return false;
 		}
-		
-		return false;
-	}
-	
-	/**
-	 * Checks if a word contains two of the same letters in a row.
-	 * @param word
-	 * @return
-	 */
-	private static boolean doesLettersAppearTwice(String word) {
-		char [] letters = word.toCharArray();
-		char test = ' ';
-		for (char c : letters) {
-			if (test == c) {
-				return true;				
-			}
-			test = c;			
-		}
- 		return false;
 	}
 	
 	/**
@@ -107,12 +124,86 @@ public class Day05 {
 	 * @param word
 	 * @return
 	 */
-	private static boolean doesContainInvalidChars(String word) {
-		String [] invalid = {"ab", "cd", "pq", "xy"};
+	private static boolean doesContainInvalidChars(char prev, char next) {
+		if ((prev == 'a' && next == 'b') || (prev == 'c' && next == 'd') || (prev == 'p' && next == 'q') || (prev == 'x' && next == 'y')) {
+			return true;
+		}
+		return false;
+	}
+	
+	private static int countNiceWordsWithNewRules(List<String> words) {
+		int count = 0;
 		
-		for (String i : invalid) {
-			if (word.toLowerCase().contains(i.toLowerCase())) {
-				return true;
+		for (String word : words) {
+			char first = ' ';
+			char second = ' ';
+			
+			boolean containsPairChars = false;
+			boolean containsSameLettersWithSpace = false;
+			
+			for (char c : word.toCharArray()) {
+				if (second != ' ') {
+					if (first ==  c) {
+						containsSameLettersWithSpace = true;
+					}
+					
+					String test = String.valueOf(first) + String.valueOf(second);
+					if (word.length() >= 4) {
+						String [] splits = word.split(test);
+						int length = 0;
+						for (String s : splits) {
+							length += s.length();
+						}
+						
+						if (length <= word.length() - 4) {
+							containsPairChars = true;
+						}
+					}
+					if (containsSameLettersWithSpace && containsPairChars) {
+						count++;
+						break;
+					} else {					
+						first = second;
+						second = c;
+					}
+				}else if (first == ' ') {
+					first = c;
+				} else if (second == ' ') {
+					second = c;
+				}
+			}
+		}
+
+		return count;
+	}
+	
+	private static boolean pairOfCharAppearsTwice(String word) {
+		char first = ' ';
+		char second = ' ';
+		for (char c : word.toCharArray()) {
+			if (second != ' ') {
+				String test = String.valueOf(first) + String.valueOf(second);
+				if (word.length() < 4) {
+					break;
+				} else {
+					String [] splits = word.split(test);
+					int length = 0;
+					for (String s : splits) {
+						length += s.length();
+					}
+					
+					if (length <= word.length() - 4) {
+						return true;
+					} else {
+						first = second;
+						second = c;
+					}
+				}
+				
+			} else if (first == ' ') {
+				first = c;
+			} else if (second == ' ') {
+				second = c;
 			}
 		}
 		return false;
