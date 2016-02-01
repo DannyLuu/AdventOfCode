@@ -55,8 +55,11 @@ public class Day06 {
 	private static String TURN_OFF = "turn off";
 	private static String TURN_ON = "turn on";
 
+	/**
+	 * Main function for Day 06
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		try {
 			readInstructions(InputScanner.readLines(FILE));
 		} catch (Exception e) {
