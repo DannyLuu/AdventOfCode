@@ -40,7 +40,14 @@ import utilities.InputScanner;
  * 
  * In little Bobby's kit's instructions booklet (provided as your puzzle input),
  * what signal is ultimately provided to wire a?
+ * 		Answer: a = 16076
  * 
+ * --- Part Two ---
+ * Now, take the signal you got on wire a, override wire b to that signal, 
+ * and reset the other wires (including wire a).
+ * 
+ * What new signal is ultimately provided to wire a?
+ * 		Answer: 2797
  * @author Hisoka
  *
  */
@@ -50,6 +57,7 @@ public class Day07 {
 			"/Users/Hisoka/Documents/workspace/adventofcode/src/advent07/wiring-instructions.txt");
 	private static List<Wire> unconnectedWires = new ArrayList<Wire>();
 	private static List<Wire> connectedWires = new ArrayList<Wire>();
+	private static Wire a = new Wire(null);
 
 	/**
 	 * Main function for Day 7
@@ -61,8 +69,21 @@ public class Day07 {
 			parseInstructions(InputScanner.readLines(FILE));
 			connectWires();
 			for (Wire w : connectedWires) {
-				System.out.println(w.getAssignment() + " = " + w.getValue());
+				if (w.getAssignment().equals("a")) {
+					System.out.println(w.getAssignment() + " = " + w.getValue());
+					a = w;
+				}
 			}
+			unconnectedWires = new ArrayList<Wire>();
+			connectedWires = new ArrayList<Wire>();
+			rewireConnection(InputScanner.readLines(FILE), a, "b");
+			connectWires();
+			for (Wire w : connectedWires) {
+				if (w.getAssignment().equals("a")) {
+					System.out.println(w.getAssignment() + " = " + w.getValue());
+				}
+			}
+			
 		} catch (Exception e) {
 			System.out.println("Error: " + e);
 		}
@@ -303,5 +324,22 @@ public class Day07 {
 			}
 		}
 		return true;
+	}
+	
+	public static void rewireConnection(List<String> steps, Wire signal, String wireToRewire) {
+		for (String line : steps) {
+			String[] parts = line.split(" ");
+			if (parts.length == 3 && parts[2].equals(wireToRewire)){
+				connectedWires.add(new Wire(wireToRewire, signal.getValue()));
+			} else if (parts.length == 3) {
+				if (isInteger(parts[0])) {
+					connectedWires.add(new Wire(parts[2], Integer.valueOf(parts[0])));
+				} else {
+					unconnectedWires.add(new Wire(line));
+				}
+			} else {
+				unconnectedWires.add(new Wire(line));
+			}
+		}
 	}
 }
