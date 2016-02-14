@@ -1,4 +1,6 @@
 # adventofcode
-Solutions to the Advent of Code website.
+##Solutions to the Advent of Code website.
 
-http://adventofcode.com/day/1
+[Advent of Code Problems][advent]
+
+[advent]:http://adventofcode.com/
