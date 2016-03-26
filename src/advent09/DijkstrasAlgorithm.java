@@ -4,6 +4,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+
+import graph.DirectedGraph;
+import graph.Node;
+import graph.UndirectedGraph;
+
 import java.util.Set;
 
 /**
@@ -45,195 +50,37 @@ import java.util.Set;
  *
  */
 public class DijkstrasAlgorithm {
-	Node initialNode = new Node();
-	Set<Node> unvisited = new HashSet<Node>();
-	DirectedGraph<Node> graph = new DirectedGraph<Node>();
-	// DirectedGraph<Node> shortestPath = new DirectedGraph<Node>();
-
-	/**
-	 * The DijkstrasAlgorithm will get a graph with nodes and edges already
-	 * populated.
-	 * 
-	 * @param graph
-	 */
-	public DijkstrasAlgorithm(DirectedGraph<Node> graph) {
-		if (graph != null) {
-			this.graph = graph;
-		}
-		unvisited = graph.getVertices();
+	private UndirectedGraph<Node> graph;
+	
+	public DijkstrasAlgorithm() {
+		graph = new UndirectedGraph<Node>();
 	}
-
-	/**
-	 * The DijkstrasAlgorithm will get a graph with nodes and edges already
-	 * populated.
-	 * 
-	 * @param graph
-	 */
-	public DijkstrasAlgorithm(DirectedGraph<Node> graph, Node initialNode) {
-		if (graph != null) {
-			this.graph = graph;
-		}
-		this.unvisited = graph.getVertices();
-		this.initialNode = graph.get(initialNode);
+	
+	public DijkstrasAlgorithm(UndirectedGraph<Node> graph) {
+		this.graph = graph;
 	}
-
-	public void run() {
-		Node currNode = initialNode;
-		assignTenitiveDistance(currNode);
-
-		while (!unvisited.isEmpty()) {
-			System.out.println("Currently on Node: " + currNode.toString());
-			calculateTenativeDistances(currNode);
-			Node temp = getShortestDistanceToNextNode(currNode);
-			if (temp == null || containsNoOutConnections(temp)) {
-				if (temp != null) {
-					System.out.println(temp.toString());
-				}
-			} else {
-				unvisited.remove(currNode);
-				currNode = temp;
-			}
-		}
-	}
-
-	/**
-	 * Assigning to every node a tentative distance value: set it to zero for
-	 * our initial node and to infinity for all other nodes.
-	 */
-	public void assignTenitiveDistance(Node initialNode) {
-		for (Node currNode : unvisited) {
-			HashMap<Node, Double> edges = graph.getEdgesFor(currNode);
-			for (Node edgeNode : unvisited) {
-				if (currNode.equals(initialNode) && edgeNode.equals(initialNode)) {
-					graph.addEdge(initialNode, initialNode, 0d);
-				} else if (!currNode.equals(edgeNode) && !edges.containsKey(edgeNode)) {
-					graph.addEdge(currNode, edgeNode, Double.POSITIVE_INFINITY);
-				}
-			}
-		}
-	}
-
-	/**
-	 * For the current node, consider all of its unvisited neighbors and
-	 * calculate their tentative distances. Compare the newly calculated
-	 * tentative distance to the current assigned value and assign the smaller
-	 * one. For example, if the current node A is marked with a distance of 6,
-	 * and the edge connecting it with a neighbor B has length 2, then the
-	 * distance to B (through A) will be 6 + 2 = 8. If B was previously marked
-	 * with a distance greater than 8 then change it to 8. Otherwise, keep the
-	 * current value.
-	 */
-	public void calculateTenativeDistances(Node currNode) {
-		HashMap<Node, Double> currNodeEdges = graph.getEdgesFor(currNode);
-		Set<Node> unvistedNeighbor = new HashSet<Node>();
+	
+	public void initialize() {
 		
-		unvistedNeighbor.addAll(unvisited);	
-		unvistedNeighbor.remove(currNode);
-
-		for (Node n : unvistedNeighbor) {
-			HashMap<Node, Double> neighbourEdges = graph.getEdgesFor(n);
+	}
+	
+	public void setUnknownEdgesDistance() {
+		for (Node n : graph.getNodes()) {
 			
-			if (neighbourEdges != null) {
-				Double distance = currNodeEdges.get(n);
-				
-				for (Node m : neighbourEdges.keySet()) {
-					Double d = neighbourEdges.get(m) + distance;
-					
-					if (currNodeEdges.containsKey(m) && d < currNodeEdges.get(m)) {
-						System.out.println("**** Current distance from " + currNode.toString() + " to " + m.toString() + " is "
-								+ currNodeEdges.get(m) + " ****");
-						System.out.println("\tShorter distance found from: " + currNode.toString() + " - > "
-								+ n.toString() + "(" + currNodeEdges.get(n) + ") -> " + m.toString() + "("
-								+ neighbourEdges.get(m) + ")");
-						System.out.println("\tSetting " + currNode.toString() + " -> " + m.toString()
-								+ " with new distance: " + d);
-						currNodeEdges.put(m, d);
-					}
-				}
-			}
 		}
-
-		graph.put(currNode, currNodeEdges);
-	}
-
-	/**
-	 * Returns the next shortest distance node to the current node.
-	 * @param currNode
-	 * @return Node if exists, otherwise null.
-	 */
-	public Node getShortestDistanceToNextNode(Node currNode) {
-		HashMap<Node, Double> edges = graph.getEdgesFor(currNode);
-		Double shortestDistance = Double.POSITIVE_INFINITY;
-		Node shortestNode = null;
-
-		if (!edges.isEmpty()) {
-			for (Entry<Node, Double> entry : edges.entrySet()) {
-				if (!entry.getKey().equals(currNode) && entry.getValue() < shortestDistance) {
-					shortestDistance = entry.getValue();
-					shortestNode = entry.getKey();
-				}
-			}
-		}
-		return shortestNode;
 	}
 	
-	/**
-	 * Gets the next shortest distance node from the current node.
-	 * @param currNode
-	 * @return Node if exists, otherwise null.
-	 */
-	public Node getShortestDistanceToNextNode(Node currNode, HashMap<Node, Double> edges) {
-		Double shortestDistance = Double.POSITIVE_INFINITY;
-		Node shortestNode = null;
-
-		if (!edges.isEmpty()) {
-			for (Entry<Node, Double> entry : edges.entrySet()) {
-				if (!entry.getKey().equals(currNode) && entry.getValue() < shortestDistance) {
-					shortestDistance = entry.getValue();
-					shortestNode = entry.getKey();
-				}
-			}
+	public void addNodes(Set<Node> nodes) {
+		for (Node n : nodes) {
+			graph.addNode(n);
 		}
-		return shortestNode;
-	}
-	
-	/**
-	 * Gets the second shortest distance from the current node.
-	 * @param currNode
-	 * @return Node if exists, otherwise null.
-	 */
-	public Node getSecondShortestNode(Node currNode) {
-		HashMap<Node, Double> edges = new HashMap<Node, Double>();
-		edges.putAll(graph.getEdgesFor(currNode));
-		edges.remove(getShortestDistanceToNextNode(currNode));
-		
-		return getShortestDistanceToNextNode(currNode, edges);
 	}
 
-	/**
-	 * Checks to see if the node has any outgoing edges. If the smallest value
-	 * is infinity, stop the algorithm.
-	 * 
-	 * @param edges
-	 * @return
-	 */
-	public boolean containsNoOutConnections(Node node) {
-		HashMap<Node, Double> edges = graph.getEdgesFor(node);
-		for (Node n : edges.keySet()) {
-			if (edges.get(n) < Double.POSITIVE_INFINITY) {
-				return false;
-			}
-		}
-		System.out.println(edges.size() + "TRUE");
-		return true;
+	public UndirectedGraph<Node> getGraph() {
+		return graph;
 	}
 
-	/**
-	 * 
-	 * @param n
-	 * @return
-	 */
-	public boolean isVisted(Node n) {
-		return !unvisited.contains(n);
-	}
+	public void setGraph(UndirectedGraph<Node> graph) {
+		this.graph = graph;
+	}	
 }

@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import graph.DirectedGraph;
+import graph.Edge;
+import graph.Node;
 import utilities.InputScanner;
 
 /**
@@ -42,16 +45,11 @@ import utilities.InputScanner;
  */
 public class Day09 {
 
-	DirectedGraph<Node> graph = new DirectedGraph<Node>();
-
 	public static void main(String args[]){
+
 		File file = new File("/Users/Hisoka/Documents/workspace/adventofcode/src/advent09/routes.txt");
 
-		Day09 day09 = new Day09();
-		
-		//day09.graph.addEdge(new Node("Faerun"), new Node("Norrath"), 129d);
-		//day09.graph.addEdge(new Node("Faerun"), new Node("TEST"), 129d);
-		
+		Day09 day09 = new Day09();		
 		
 		try {
 			day09.createGraph(InputScanner.readLines(file));
@@ -59,13 +57,22 @@ public class Day09 {
 			e.printStackTrace();
 		}
 		
-		//System.out.println("" + day09.graph.getEdgesFor(new Node("Faerun")).containsKey(day09.graph.get(new Node("Norrath"))));
-		//DijkstrasAlgorithm algorithm = new DijkstrasAlgorithm(day09.graph, new Node("Straylight"));
-		DijkstrasAlgorithm algorithm = new DijkstrasAlgorithm(day09.graph, new Node("Faerun"));
-		//algorithm.assignTenitiveDistance(new Node("Straylight"));
-		algorithm.run();
-		//System.out.println(day09.graph.toString());
+		Node a = new Node("a");
+		Node b = new Node("b");
+		Node c = new Node("c");
+		
+		Edge e = new Edge<Node>(a, b, 2.0d);
+		Edge f = new Edge<Node>(a, b, 3d);
+		Edge h = new Edge<Node>(b, c, 10d);
+		Edge g = new Edge<Node>(b, a, 10d);
+		Edge i = new Edge<Node>(c, a, 10d);
 
+		System.out.println("Edge e = e " + e.equals(e));
+		System.out.println("Edge e = f " + e.equals(f));
+		System.out.println("Edge f = h " + f.equals(h));
+		System.out.println("Edge g = e " + g.equals(e));
+		System.out.println("Edge g = i " + g.equals(i));
+		
 	}
 	
 	/**
@@ -73,15 +80,15 @@ public class Day09 {
 	 * @param edges
 	 */
 	public void createGraph(List<String> edges) {
-		for (String e : edges) {
+		//for (String e : edges) {
 			// ex. Faerun to Norrath = 129
-			String[] parts = e.split(" ");
-			graph.addNode(new Node(parts[0]));
-			graph.addNode(new Node(parts[2]));
+			//String[] parts = e.split(" ");
+			//graph.addNode(new Node(parts[0]));
+			//graph.addNode(new Node(parts[2]));
 			
 			//System.out.println("Adding Edge(" + parts[0] + ", " + parts[2] + ", " + Double.valueOf(parts[4]) + ")");
 			
-			graph.addEdge(new Node(parts[0]), new Node(parts[2]), Double.valueOf(parts[4]));
-		}
+			//graph.addEdge(new Node(parts[0]), new Node(parts[2]), Double.valueOf(parts[4]));
+		//}
 	}
 }
